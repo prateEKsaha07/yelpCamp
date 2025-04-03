@@ -15,6 +15,7 @@ mongoose.connect('mongodb://localhost:27017/yelp-camp',{
 //middlewares
 app.set('view engine','ejs');
 app.set('views',path.join(__dirname,'views'));
+app.use(express.urlencoded({extended:true}))
 
 //securing connections with the database
 const db = mongoose.connection;
@@ -49,10 +50,23 @@ app.get('/campground',async (req,res)=>{
     res.render('campgrounds/index',{campgrounds})
 })
 
+//create route
+app.get('/campground/new',(req,res)=>{
+    res.render('campgrounds/new')
+})
+
+//getting the data from new camp form 
+app.post('/campground',async (req,res)=>{
+    const campground = new campGround(req.body.campground);
+    await campground.save();
+    res.redirect(`/campground/${campground._id}`);
+});
+
 //show route
 app.get('/campground/:id', async (req,res)=>{
     const id = req.params.id;
     const camp = await campGround.findById(id);
     res.render('campgrounds/show',{camp})
+
 })
 
