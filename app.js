@@ -43,9 +43,16 @@ app.get('/',(req,res)=>{
 //     await camp.save();
 //     res.send(camp)
 // })
-
+//index route
 app.get('/campground',async (req,res)=>{
     const campgrounds = await campGround.find({});
     res.render('campgrounds/index',{campgrounds})
+})
+
+//show route
+app.get('/campground/:id', async (req,res)=>{
+    const id = req.params.id;
+    const camp = await campGround.findById(id);
+    res.render('campgrounds/show',{camp})
 })
 
