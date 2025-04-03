@@ -34,14 +34,14 @@ app.get('/',(req,res)=>{
 })
 
 // new route
-app.get('/makeCampground',async (req,res) =>{
-    const camp = new campGround({
-        title: 'My backyard',
-        price: 8347,
-        description:"just a boring place "
-    });
-    await camp.save();
-    res.send(camp)
-})
+// app.get('/makeCampground',async (req,res) =>{
+//     const camp = new campGround({
+//         title: 'My backyard',
+//         price: 8347,
+//         description:"just a boring place "
+//     });
+//     await camp.save();
+//     res.send(camp)
+// })
 
 
