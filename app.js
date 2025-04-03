@@ -44,4 +44,8 @@ app.get('/',(req,res)=>{
 //     res.send(camp)
 // })
 
+app.get('/campground',async (req,res)=>{
+    const campgrounds = await campGround.find({});
+    res.render('campgrounds/index',{campgrounds})
+})
 
