@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const path = require('path');
 const campGround = require('./models/campground');
 const { title } = require('process');
+const methodOverride = require('method-override');
+
 
 const app = express();
 
@@ -16,6 +18,7 @@ mongoose.connect('mongodb://localhost:27017/yelp-camp',{
 app.set('view engine','ejs');
 app.set('views',path.join(__dirname,'views'));
 app.use(express.urlencoded({extended:true}))
+app.use(methodOverride('_method'))
 
 //securing connections with the database
 const db = mongoose.connection;
@@ -44,6 +47,8 @@ app.get('/',(req,res)=>{
 //     await camp.save();
 //     res.send(camp)
 // })
+
+
 //index route
 app.get('/campground',async (req,res)=>{
     const campgrounds = await campGround.find({});
@@ -70,3 +75,16 @@ app.get('/campground/:id', async (req,res)=>{
 
 })
 
+//edit route
+app.get('/campground/:id/edit', async (req,res)=>{
+    const id = req.params.id;
+    const camp = await campGround.findById(id);
+    res.render('campgrounds/edit',{camp})
+    //got the data not to update it to the db we need a package name method-override
+})
+
+app.put('/campground/:id',async(req,res) =>{
+    const id = req.params.id;
+    const campground = await campGround.findByIdAndUpdate(id,{...req.body.campground})
+    res.redirect(`/campground/${id}`)
+})
