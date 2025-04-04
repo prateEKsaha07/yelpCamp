@@ -37,7 +37,7 @@ app.get('/',(req,res)=>{
     res.render('home')
 })
 
-// new route
+// testing input route
 // app.get('/makeCampground',async (req,res) =>{
 //     const camp = new campGround({
 //         title: 'My backyard',
@@ -88,3 +88,10 @@ app.put('/campground/:id',async(req,res) =>{
     const campground = await campGround.findByIdAndUpdate(id,{...req.body.campground})
     res.redirect(`/campground/${id}`)
 })
+
+//delete route
+app.delete('/campground/:id',async (req,res) =>{
+    const id = req.params.id;
+    await campGround.findByIdAndDelete(id);
+    res.redirect('/campground/');
+});
