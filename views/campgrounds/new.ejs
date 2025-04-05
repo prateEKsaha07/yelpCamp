@@ -14,7 +14,7 @@
         <h1 class="text-center">new campground</h1>
         <div class="col-6 offset-3">
             <form action="/campground" method="POST">
-                
+
                 <div class="mb-3">
                     <label class="form-label" for="title">title:</label>
                     <input class="form-control" type="text" id="title" name ='campground[title]'>
@@ -39,7 +39,14 @@
                     <label class="form-label" for="price">price:</label>
                     <div class="input-group">
                         <span class="input-group-text" id="price-label">₹</span>
-                        <input class="form-control" type="number" placeholder="0.00" aria-label="price" aria-describedby="price-label" id='price" name ='campground[price]'>
+                        <input 
+                        class="form-control" 
+                        type="number" 
+                        placeholder="0.00" 
+                        aria-label="price" 
+                        aria-describedby="price-label" 
+                        id='price' 
+                        name ='campground[image]'>
                     </div>
                 </div>
 
