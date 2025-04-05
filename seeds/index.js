@@ -32,6 +32,9 @@ const seedDB = async() =>{
         const camp = new campGround({
             location: `${cities[random1000].city},${cities[random1000].state}`,
             title: `${sample(places)} ${sample(descriptors)}`,
+            image:'https://picsum.photos/400?random=${Math.random()}',
+            description: 'loremad adad fafef aefrfsjfs akdfehafb afuehka oahuhka iuhckehck uhckhk cahzhue uchsgckjb aowhaojlxnzc aohcahchk', 
+            price: Math.floor(Math.random()*50)
 
         })
         await camp.save();
