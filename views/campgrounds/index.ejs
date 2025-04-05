@@ -1,11 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>campground</title>
-</head>
-<body>
+<% layout('layouts/boilerplate') %>
+
     <h1>all campgrounds</h1>
     <ul>
         <% for(let campground of campgrounds) { %>
@@ -16,9 +10,6 @@
             </li>
         <% } %>
     </ul>
-    <footer>
         <a href="/campground/new">add a new camp ground</a>
         <a href="/campground/">all camps</a>
-    </footer>
-</body>
-</html>
+        <a href="/">home!</a>
