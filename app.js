@@ -7,7 +7,7 @@ const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
-const Joi = require('joi');
+const { campgroundSchema } = require('./Schemas')
 
 
 const app = express();
@@ -24,6 +24,18 @@ app.set('views',path.join(__dirname,'views'));
 app.use(express.urlencoded({extended:true}))
 app.use(methodOverride('_method'))
 app.engine('ejs',ejsMate)
+
+//middleware function
+const validateCampground = (req,res,next) =>{
+     // if(!req.body.campground) throw new ExpressError('invalid campground id', 400);
+    const {error} = campgroundSchema.validate(req.body)
+    if(error){
+        const msg = error.details.map(el => el.message).join(',')
+        throw new ExpressError(msg,400);
+    }else{
+        next();
+    }
+}
 
 
 //securing connections with the database
@@ -66,23 +78,7 @@ app.get('/campground/new',(req,res)=>{
 })
 
 //getting the data from new camp form 
-app.post('/campground', catchAsync(async(req,res,next)=>{
-    // if(!req.body.campground) throw new ExpressError('invalid campground id', 400);
-    const campgroundSchema = Joi.object({
-        campground:Joi.object({
-            title: Joi.string().required(),
-            price: Joi.number().required().min(0),
-            image: Joi.string().required(),
-            location: Joi.string().required(),
-            description: Joi.string().required()
-        }).required()
-    })
-    const {error} = campgroundSchema.validate(req.body)
-    if(error){
-        const msg = error.details.map(el => el.message).join(',')
-        throw new ExpressError(msg,400);
-    }
-    console.log(results);
+app.post('/campground', validateCampground ,catchAsync(async(req,res,next)=>{
     const campground = new campGround(req.body.campground);
     await campground.save();
     res.redirect(`/campground/${campground._id}`);
