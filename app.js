@@ -68,7 +68,7 @@ app.get('/campground/new',(req,res)=>{
 //getting the data from new camp form 
 app.post('/campground', catchAsync(async(req,res,next)=>{
     // if(!req.body.campground) throw new ExpressError('invalid campground id', 400);
-    const campgroundSchema = join.object({
+    const campgroundSchema = Joi.object({
         campground:Joi.object({
             title: Joi.string().required(),
             price: Joi.number().required().min(0),
@@ -86,7 +86,6 @@ app.post('/campground', catchAsync(async(req,res,next)=>{
     const campground = new campGround(req.body.campground);
     await campground.save();
     res.redirect(`/campground/${campground._id}`);
-    
 }));
 
 //show route
