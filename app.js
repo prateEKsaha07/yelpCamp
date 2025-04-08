@@ -53,7 +53,6 @@ app.get('/',(req,res)=>{
 //     res.send(camp)
 // })
 
-
 //index route
 app.get('/campground',catchAsync(async(req,res)=>{
     const campgrounds = await campGround.find({});
@@ -67,6 +66,7 @@ app.get('/campground/new',(req,res)=>{
 
 //getting the data from new camp form 
 app.post('/campground', catchAsync(async(req,res,next)=>{
+    if(!req.body.campground) throw new ExpressError('invalid campground id', 400);
     const campground = new campGround(req.body.campground);
     await campground.save();
     res.redirect(`/campground/${campground._id}`);
@@ -101,9 +101,17 @@ app.delete('/campground/:id',catchAsync(async(req,res) =>{
     res.redirect('/campground/');
 }));
 
-//middleware error handler
-app.use((e, req, res, next) =>{
-    res.send('oh boi, u trippin right!')
+//generic error for page not found
+app.all(/(.*)/,(req,res,next)=>{
+    next(new ExpressError('page not found',404))
 })
+
+//middleware error handler
+app.use((err, req, res, next) =>{
+    const { statusCode = 500,message= 'something went wrong'} = err;
+    if(!err.message) err.message = 'internal server error';
+    res.status(statusCode).render('partials/error',{err})
+})
+
 
 
