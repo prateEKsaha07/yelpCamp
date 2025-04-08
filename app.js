@@ -5,14 +5,16 @@ const campGround = require('./models/campground');
 const { title } = require('process');
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
+const catchAsync = require('./utils/catchAsync');
+const ExpressError = require('./utils/ExpressError');
 
 
 const app = express();
 
 //db connection
 mongoose.connect('mongodb://localhost:27017/yelp-camp',{
-    // useNewUrlParser: true,
-    // useUnifiedTopology: true
+    useNewUrlParser: true,
+    useUnifiedTopology: true
 });
 
 //middlewares
@@ -21,6 +23,7 @@ app.set('views',path.join(__dirname,'views'));
 app.use(express.urlencoded({extended:true}))
 app.use(methodOverride('_method'))
 app.engine('ejs',ejsMate)
+
 
 //securing connections with the database
 const db = mongoose.connection;
@@ -52,10 +55,10 @@ app.get('/',(req,res)=>{
 
 
 //index route
-app.get('/campground',async (req,res)=>{
+app.get('/campground',catchAsync(async(req,res)=>{
     const campgrounds = await campGround.find({});
     res.render('campgrounds/index',{campgrounds})
-})
+}))
 
 //create route
 app.get('/campground/new',(req,res)=>{
@@ -63,37 +66,44 @@ app.get('/campground/new',(req,res)=>{
 })
 
 //getting the data from new camp form 
-app.post('/campground',async (req,res)=>{
+app.post('/campground', catchAsync(async(req,res,next)=>{
     const campground = new campGround(req.body.campground);
     await campground.save();
     res.redirect(`/campground/${campground._id}`);
-});
+    
+}));
 
 //show route
-app.get('/campground/:id', async (req,res)=>{
+app.get('/campground/:id', catchAsync(async(req,res)=>{
     const id = req.params.id;
     const camp = await campGround.findById(id);
     res.render('campgrounds/show',{camp})
-
-})
+}))
 
 //edit route
-app.get('/campground/:id/edit', async (req,res)=>{
+app.get('/campground/:id/edit', catchAsync(async(req,res)=>{
     const id = req.params.id;
     const camp = await campGround.findById(id);
     res.render('campgrounds/edit',{camp})
     //got the data not to update it to the db we need a package name method-override
-})
+}))
 
-app.put('/campground/:id',async(req,res) =>{
+app.put('/campground/:id',catchAsync(async(req,res) =>{
     const id = req.params.id;
     const campground = await campGround.findByIdAndUpdate(id,{...req.body.campground})
     res.redirect(`/campground/${id}`)
-})
+}))
 
 //delete route
-app.delete('/campground/:id',async (req,res) =>{
+app.delete('/campground/:id',catchAsync(async(req,res) =>{
     const id = req.params.id;
     await campGround.findByIdAndDelete(id);
     res.redirect('/campground/');
-});
+}));
+
+//middleware error handler
+app.use((e, req, res, next) =>{
+    res.send('oh boi, u trippin right!')
+})
+
+
