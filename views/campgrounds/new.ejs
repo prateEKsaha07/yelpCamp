@@ -10,29 +10,43 @@
         </div>
         <button>add campground</button>
     </form> -->
+    
     <div class="row">
         <h1 class="text-center">new campground</h1>
         <div class="col-6 offset-3">
-            <form action="/campground" method="POST">
+            <form action="/campground" method="POST" 
+            novalidate class="validated-form" >
 
                 <div class="mb-3">
                     <label class="form-label" for="title">title:</label>
-                    <input class="form-control" type="text" id="title" name ='campground[title]'>
+                    <input class="form-control" type="text" id="title" name ='campground[title]' required>
+                    <div class="valid-feedback">
+                        it will work!
+                    </div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label" for="location">location:</label>
-                    <input class="form-control" type="text" id="location" name ='campground[location]'>
+                    <input class="form-control" type="text" id="location" name ='campground[location]' required>
+                    <div class="valid-feedback">
+                        it will work!
+                    </div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label" for="image">image url:</label>
-                    <input class="form-control" type="text" id="image" name ='campground[image]'>
+                    <input class="form-control" type="text" id="image" name ='campground[image]' required>
+                    <div class="valid-feedback">
+                        it will work!
+                    </div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label" for="description">Description:</label>
-                    <textarea class="form-control" type="text" id="description" name ='campground[description]'></textarea>
+                    <textarea class="form-control" type="text" id="description" name ='campground[description]' required></textarea>
+                    <div class="valid-feedback">
+                        it will work!
+                    </div>
                 </div>
 
                 <div class="mb-3">
@@ -46,14 +60,14 @@
                         aria-label="price" 
                         aria-describedby="price-label" 
                         id='price' 
-                        name ='campground[image]'>
+                        name ='campground[price]' required>
                     </div>
                 </div>
 
                 <div class="mb-3">                
                     <button class="btn btn-success">add campground</button>
-                </div>      
-
-           </form> 
+                </div>
+           </form>
         </div>
     </div>
+
