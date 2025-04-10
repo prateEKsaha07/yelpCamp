@@ -1,7 +1,7 @@
 <% layout('layouts/boilerplate') %>
 
 <div class="row">
-    <div class="col-6 offset-3">
+    <div class="col-6 ">
         <div class="card" >
             <img src="<%= camp.image %>" class="card-img-top" alt="...">
             <div class="card-body">
@@ -19,7 +19,11 @@
                 </form>
             </div>
         </div>
-        <form  class="mb-3" action="/campground/<%=camp._id %>/reviews" method="POST">
+    </div>
+
+    <!-- review side -->
+    <div class="col-6">
+        <form  class="mb-3 validated-form " action="/campground/<%=camp._id %>/reviews" method="POST" novalidate>
             <h2>Leave A Review:</h2>
             <div class="mb-3">
                 <div class="mb-3">
@@ -28,11 +32,24 @@
                 </div>
                 <label class="form-label" for="body">reviews
                 </label>
-                <textarea class="form-control" name="review[body]" id="body" rows="10" cols="43"></textarea>
+                <textarea class="form-control" name="review[body]" id="body" rows="10" cols="43" required></textarea>
+                <div class="valid-feedback">thanks for the review ! </div>
             </div>
             <button class="btn btn-success">submit</button>
         </form>
+        <% for (let review of camp.reviews) { %>
+            <div class="card mb-3 ">
+        <div class="card-body">
+            <h5 class="card-title">rating : <%= review.rating %>/5</h5>
+            <p class="card-text"><%= review.body %></p>
+            <form action="/campground/<%= camp._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
+                <button class="btn-sm btn btn-danger" type="submit">delete</button>
+            </form>
+        </div>
     </div>
+        <% } %>
+    </div>
+
 </div>
 
 <!-- ignore these------ -->
