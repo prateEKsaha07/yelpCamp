@@ -19,6 +19,19 @@
                 </form>
             </div>
         </div>
+        <form  class="mb-3" action="/campground/<%=camp._id %>/reviews" method="POST">
+            <h2>Leave A Review:</h2>
+            <div class="mb-3">
+                <div class="mb-3">
+                    <label class="form-label" for="rating">rating</label>
+                    <input class="form-control" type="range" min="1" max="5" name="review[rating]" id="rating">
+                </div>
+                <label class="form-label" for="body">reviews
+                </label>
+                <textarea class="form-control" name="review[body]" id="body" rows="10" cols="43"></textarea>
+            </div>
+            <button class="btn btn-success">submit</button>
+        </form>
     </div>
 </div>
 

@@ -8,6 +8,7 @@ const ejsMate = require('ejs-mate');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
 const { campgroundSchema } = require('./Schemas')
+const Review = require('./models/review');
 
 
 const app = express();
@@ -111,6 +112,17 @@ app.delete('/campground/:id',catchAsync(async(req,res) =>{
     await campGround.findByIdAndDelete(id);
     res.redirect('/campground/');
 }));
+
+// review model
+app.post('/campground/:id/reviews', catchAsync(async(req,res)=>{
+    // res.send("success!")
+    const campground = await campGround.findById(req.params.id)
+    const review = new Review(req.body.review);
+    campground.reviews.push(review);
+    await review.save();
+    await campground.save();
+    res.redirect(`/campground/${campground._id}`)
+}))
 
 //generic error for page not found
 app.all(/(.*)/,(req,res,next)=>{
