@@ -9,6 +9,7 @@
 <body class="d-flex flex-column vh-100" >
     <%- include('../partials/navbar') %>
     <main class="container mt-3">
+        <%- include('../partials/flash')%>
         <%- body %>
     </main>
 
@@ -16,23 +17,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 
     <script src='/javascripts/FormValid.js'></script> 
-  <!-- <script>
-    (() => {
-    'use strict'
-    const forms = document.querySelectorAll('.validated-form')
-  
-    Array.from(forms).forEach(form => {
-      form.addEventListener('submit', event => {
-        if (!form.checkValidity()) {
-          event.preventDefault()
-          event.stopPropagation()
-        }
-  
-        form.classList.add('was-validated')
-      }, false)
-    })
-  })()
-  </script> -->
-
 </body>
 </html>

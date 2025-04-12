@@ -19,22 +19,6 @@ const validateCampground = (req,res,next) =>{
     }
 }
 
-// // home route shifted it from here to app.js
-// router.get('/',(req,res)=>{
-//     res.render('home')
-// })
-
-// testing input route
-// router.get('/makeCampground',async (req,res) =>{
-//     const camp = new Campground({
-//         title: 'My backyard',
-//         price: 8347,
-//         description:"just a boring place "
-//     });
-//     await camp.save();
-//     res.send(camp)
-// })
-
 //index route
 router.get('/',catchAsync(async(req,res)=>{
     const campgrounds = await Campground.find({});
@@ -51,13 +35,26 @@ router.get('/new',(req,res)=>{
 router.post('/', validateCampground ,catchAsync(async(req,res,next)=>{
     const campground = new Campground(req.body.campground);
     await campground.save();
+    req.flash('success','new campground created successfully!')
     res.redirect(`/campground/${campground._id}`);
 }));
 
 //show route
 router.get('/:id', catchAsync(async(req,res)=>{
     const id = req.params.id;
+
+    // Check if ID is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        req.flash('error', 'Invalid campground ID!');
+        return res.redirect('/campground');
+    }
+
+
     const camp = await Campground.findById(id).populate('reviews')
+    if (!camp) {
+        req.flash('error', 'Cannot find that campground!');
+        return res.redirect('/campground'); // make sure this matches your index route
+    }
     res.render('campgrounds/show',{camp});
     // populating with reviews
     console.log(camp)
@@ -74,6 +71,7 @@ router.get('/:id/edit', catchAsync(async(req,res)=>{
 router.put('/:id',catchAsync(async(req,res) =>{
     const id = req.params.id;
     const campground = await Campground.findByIdAndUpdate(id,{...req.body.campground})
+    req.flash('success','new campground updated successfully!')
     res.redirect(`/campground/${id}`)
 }))
 
@@ -81,6 +79,8 @@ router.put('/:id',catchAsync(async(req,res) =>{
 router.delete('/:id',catchAsync(async(req,res) =>{
     const id = req.params.id;
     await Campground.findByIdAndDelete(id);
-    res.redirect('campground/');
+    console.log('campground deleted:', id)
+    req.flash('success','campground deleted successfully!')
+    res.redirect('/campground');
 }));
 module.exports = router;
