@@ -4,10 +4,11 @@ const path = require('path');
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 const ExpressError = require('./utils/ExpressError');
-
+const session = require('express-session');
 // routes
 const campgrounds = require('./routes/campgrounds')
-const reviews = require('./routes/reviews')
+const reviews = require('./routes/reviews');
+const { Session } = require('inspector/promises');
 
 
 const app = express();
@@ -23,6 +24,17 @@ app.use(express.urlencoded({extended:true}))
 app.use(methodOverride('_method'))
 app.engine('ejs',ejsMate)
 app.use(express.static(path.join(__dirname,'public')));
+const sessionConfig ={
+    secret:'hellohowareyou!',
+    resave:false,
+    saveUninitialized:true,
+    cookie:{
+        httpOnly:true, // this is default these days but can do it
+        expires: Date.now() + 86400000 * 7, // one day = 86400000 ms
+        maxAge:86400000 * 7 ,
+    }
+}
+app.use(session(sessionConfig));
 
 // home route
 app.get('/',(req,res)=>{
