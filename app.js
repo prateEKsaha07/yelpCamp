@@ -80,6 +80,7 @@ app.use((err, req, res, next) =>{
     if(!err.message) err.message = 'internal server error';
     res.status(statusCode).render('partials/error',{err})
 })
-
+//todo:
+// that flash alert is not properly responding needed to be fixed 
 
 
