@@ -1,14 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
-const campGround = require('./models/campground');
-const { title } = require('process');
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
-const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
-const { campgroundSchema , reviewSchema } = require('./Schemas')
-const Review = require('./models/review');
+
+// routes
+const campgrounds = require('./routes/campgrounds')
+const reviews = require('./routes/reviews')
 
 
 const app = express();
@@ -26,28 +25,10 @@ app.use(express.urlencoded({extended:true}))
 app.use(methodOverride('_method'))
 app.engine('ejs',ejsMate)
 
-//middleware function for new campground server side validation
-const validateCampground = (req,res,next) =>{
-     // if(!req.body.campground) throw new ExpressError('invalid campground id', 400);
-    const {error} = campgroundSchema.validate(req.body)
-    if(error){
-        const msg = error.details.map(el => el.message).join(',')
-        throw new ExpressError(msg,400);
-    }else{
-        next();
-    }
-}
-
-//middleware function for new review server side validation
-const validateReview = (req,res,next) =>{
-    const {error} = reviewSchema.validate(req.body)
-    if(error){
-        const msg = error.details.map(el => el.message).join(',')
-        throw new ExpressError(msg,400);
-        }else{
-            next();
-        }
-    }
+// home route
+app.get('/',(req,res)=>{
+    res.render('home')
+})
 
 //securing connections with the database
 const db = mongoose.connection;
@@ -61,88 +42,10 @@ app.listen(3000,()=>{
     console.log('server is running on port 3000')
 })
 
-// home route
-app.get('/',(req,res)=>{
-    res.render('home')
-})
 
-// testing input route
-// app.get('/makeCampground',async (req,res) =>{
-//     const camp = new campGround({
-//         title: 'My backyard',
-//         price: 8347,
-//         description:"just a boring place "
-//     });
-//     await camp.save();
-//     res.send(camp)
-// })
+app.use('/campground', campgrounds );
+app.use('/campground/:id/reviews', reviews);
 
-//index route
-app.get('/campground',catchAsync(async(req,res)=>{
-    const campgrounds = await campGround.find({});
-    res.render('campgrounds/index',{campgrounds})
-}))
-
-//create route
-app.get('/campground/new',(req,res)=>{
-    res.render('campgrounds/new')
-})
-
-//getting the data from new camp form 
-app.post('/campground', validateCampground ,catchAsync(async(req,res,next)=>{
-    const campground = new campGround(req.body.campground);
-    await campground.save();
-    res.redirect(`/campground/${campground._id}`);
-}));
-
-//show route
-app.get('/campground/:id', catchAsync(async(req,res)=>{
-    const id = req.params.id;
-    const camp = await campGround.findById(id).populate('reviews')
-    res.render('campgrounds/show',{camp});
-    // populating with reviews
-    console.log(camp)
-}))
-
-//edit route
-app.get('/campground/:id/edit', catchAsync(async(req,res)=>{
-    const id = req.params.id;
-    const camp = await campGround.findById(id);
-    res.render('campgrounds/edit',{camp})
-    //got the data not to update it to the db we need a package name method-override
-}))
-
-app.put('/campground/:id',catchAsync(async(req,res) =>{
-    const id = req.params.id;
-    const campground = await campGround.findByIdAndUpdate(id,{...req.body.campground})
-    res.redirect(`/campground/${id}`)
-}))
-
-//delete route
-app.delete('/campground/:id',catchAsync(async(req,res) =>{
-    const id = req.params.id;
-    await campGround.findByIdAndDelete(id);
-    res.redirect('/campground/');
-}));
-
-// review model
-app.post('/campground/:id/reviews', validateReview,catchAsync(async(req,res)=>{
-    // res.send("success!")
-    const campground = await campGround.findById(req.params.id)
-    const review = new Review(req.body.review);
-    campground.reviews.push(review);
-    await review.save();
-    await campground.save();
-    res.redirect(`/campground/${campground._id}`)
-}))
-
-//delete review
-app.delete('/campground/:id/reviews/:reviewId', catchAsync(async(req,res)=>{
-    const{id, reviewId} = req.params;
-    await campGround.findByIdAndUpdate(id,{$pull:{reviews:reviewId}});
-    await Review.findByIdAndDelete(reviewId);
-    res.redirect(`/campground/${id}`)
-}))
 
 //generic error for page not found
 app.all(/(.*)/,(req,res,next)=>{
