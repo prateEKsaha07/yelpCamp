@@ -15,12 +15,22 @@
           <li class="nav-item">
             <a class="nav-link" href="/campground/new">add Campground</a>
           </li>
-          <div class="nav-item ml-auto">
+
+          <% if(!currentUser){%>
+          <li class="nav-item">
             <a class="nav-link" href="/login">Login</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="/register">register</a>
+          </li>
+          <% } else {%>
+          <li class="nav-item">
             <a class="nav-link" href="/logout">logout</a>
-          </div>
+          </li> 
+          <% } %>
         </ul>
       </div>  
     </div>
   </nav>
+
+  <!-- the logout option is not working -->
