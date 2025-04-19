@@ -5,7 +5,10 @@ const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 const ExpressError = require('./utils/ExpressError');
 const session = require('express-session');
-const flash = require('connect-flash')
+const flash = require('connect-flash');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const User = require('./models/user');
 
 // routes
 const campgrounds = require('./routes/campgrounds')
@@ -14,7 +17,6 @@ const { Session } = require('inspector/promises');
 
 
 const app = express();
-
 //db connection
 mongoose.connect('mongodb://localhost:27017/yelp-camp',{
 });
@@ -46,6 +48,27 @@ app.use((req,res,next)=>{
     res.locals.error=req.flash('error');
     next();
 })
+
+
+
+app.use(passport.initialize())
+app.use(passport.session()); // for persistence login session
+passport.use(new LocalStrategy(User.authenticate()))
+
+// this basically storing and de-storing in the session
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+//temp res-working
+// app.get('/fakeUser',async(req,res) =>{
+//     const user = new User({
+//         username:'test',
+//         email:'test',
+//     })
+//     const result = await User.register(user,'test123');
+//     res.send(result);
+// })
+
 
 // home route
 app.get('/',(req,res)=>{
@@ -82,5 +105,6 @@ app.use((err, req, res, next) =>{
 })
 //todo:
 // that flash alert is not properly responding needed to be fixed 
+
 
 
