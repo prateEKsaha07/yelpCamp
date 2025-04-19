@@ -9,11 +9,15 @@ const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
+const { Session } = require('inspector/promises');
 
 // routes
-const campgrounds = require('./routes/campgrounds')
-const reviews = require('./routes/reviews');
-const { Session } = require('inspector/promises');
+const campgroundRoutes = require('./routes/campgrounds')
+const reviewRoutes = require('./routes/reviews');
+const userRoutes = require('./routes/users');
+
+
+
 
 
 const app = express();
@@ -28,6 +32,7 @@ app.use(express.urlencoded({extended:true}))
 app.use(methodOverride('_method'))
 app.engine('ejs',ejsMate)
 app.use(express.static(path.join(__dirname,'public')));
+
 
 
 const sessionConfig ={
@@ -85,11 +90,11 @@ db.once('open',()=>{
 //starting the server
 app.listen(3000,()=>{
     console.log('server is running on port 3000')
-})
+});
 
-
-app.use('/campground', campgrounds );
-app.use('/campground/:id/reviews', reviews);
+app.use('/',userRoutes)
+app.use('/campground', campgroundRoutes );
+app.use('/campground/:id/reviews', reviewRoutes);
 
 
 //generic error for page not found
