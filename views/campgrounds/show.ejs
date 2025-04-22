@@ -35,6 +35,9 @@
 
     <!-- review side -->
     <div class="col-6">
+
+        
+        <% if(currentUser) { %>
         <form  class="mb-3 validated-form " action="/campground/<%=camp._id %>/reviews" method="POST" novalidate>
             <h2>Leave A Review:</h2>
             <div class="mb-3">
@@ -49,6 +52,9 @@
             </div>
             <button class="btn btn-success">submit</button>
         </form>
+        <% } %>
+
+
         <% for (let review of camp.reviews) { %>
             <div class="card mb-3 ">
         <div class="card-body">
