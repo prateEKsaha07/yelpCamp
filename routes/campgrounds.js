@@ -63,22 +63,41 @@ router.get('/:id', catchAsync(async(req,res)=>{
 
     res.render('campgrounds/show',{camp, currentUser: req.user});
     // populating with reviews
+
+    //debugging
     console.log('Camp Author:', camp.author);
-console.log('Current User:', req.user ? req.user._id : 'No user');
+    console.log('Current User:', req.user ? req.user._id : 'No user');
 
 }))
 
 //edit route
 router.get('/:id/edit',isLoggedIn, catchAsync(async(req,res)=>{
+    
     const id = req.params.id;
     const camp = await Campground.findById(id);
+
+    if (!camp) {
+        req.flash('error', 'Cannot find that campground!');
+        return res.redirect('/campground');
+    }
+
+    if(!camp.author.equals(req.user._id)){
+        req.flash('error', 'You do not have permission to edit this campground!'); 
+        return res.redirect(`/campground/${id}`);
+    }
+    
     res.render('campgrounds/edit',{camp})
     //got the data not to update it to the db we need a package name method-override
 }))
 
-router.put('/:id',catchAsync(async(req,res) =>{
+router.put('/:id',isLoggedIn,catchAsync(async(req,res) =>{
     const id = req.params.id;
-    const campground = await Campground.findByIdAndUpdate(id,{...req.body.campground})
+    const campground = await Campground.findById(id);
+    if(!campground.author.equals(req.user._id)){
+        req.flash('error', 'You do not have permission to edit this campground!'); 
+        return res.redirect(`/campground/${id}`);
+    }
+    const camp = await Campground.findByIdAndUpdate(id,{...req.body.campground})
     req.flash('success','campground updated successfully!')
     res.redirect(`/campground/${id}`)
 }))
