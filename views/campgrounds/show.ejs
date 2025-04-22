@@ -13,12 +13,19 @@
               <li class="list-group-item"><strong>rs.<%= camp.price %>/night</strong></li>
               <li class="list-group-item"><strong>submitted BY:</strong> <%= camp.author.username %></li>
             </ul>
+            <!-- needed to be fixed -->
+            <% if (currentUser && String(camp.author._id) === String(currentUser._id)) { %>
+            <!-- fixed -->
+
             <div class="card-body">
                 <a  class="card-link btn btn-info" href="/campground/<%= camp._id %>/edit">edit</a>
                 <form class="d-inline" action="/campground/<%= camp._id %>?_method=DELETE"method='POST'>
                     <button class="btn btn-danger">delete</button>
                 </form>
             </div>
+            <% } %>
+            <%= currentUser && currentUser._id %>
+            <%= camp.author %>
         </div>
     </div>
 

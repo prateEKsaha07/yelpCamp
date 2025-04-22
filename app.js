@@ -48,13 +48,7 @@ const sessionConfig ={
 app.use(session(sessionConfig));
 
 app.use(flash());
-app.use((req,res,next)=>{
-    console.log(req.session)
-    res.locals.currentUser = req.user; // this is the logged-in user
-    res.locals.success=req.flash('success');
-    res.locals.error=req.flash('error');
-    next();
-})
+
 
 
 
@@ -75,6 +69,14 @@ passport.deserializeUser(User.deserializeUser());
 //     const result = await User.register(user,'test123');
 //     res.send(result);
 // })
+
+app.use((req,res,next)=>{
+    // console.log(req.session)
+    res.locals.currentUser = req.user; // this is the logged-in user
+    res.locals.success=req.flash('success');
+    res.locals.error=req.flash('error');
+    next();
+})
 
 
 // home route

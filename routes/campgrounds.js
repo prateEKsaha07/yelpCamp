@@ -58,9 +58,14 @@ router.get('/:id', catchAsync(async(req,res)=>{
         req.flash('error', 'Cannot find that campground!');
         return res.redirect('/campground'); // make sure this matches your index route
     }
-    res.render('campgrounds/show',{camp});
+    camp.author = camp.author.toString();  // or ._id.toString() if it's populated
+
+
+    res.render('campgrounds/show',{camp, currentUser: req.user});
     // populating with reviews
-    console.log(camp)
+    console.log('Camp Author:', camp.author);
+console.log('Current User:', req.user ? req.user._id : 'No user');
+
 }))
 
 //edit route
