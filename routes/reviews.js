@@ -7,7 +7,7 @@ const Campground = require('../models/campground');
 const mongoose = require('mongoose');
 // const { reviewSchema } = require('../Schemas')
 const Review = require('../models/review')
-const { validateReview, isLoggedIn, isAuthor } = require('../middleware');
+const { validateReview, isLoggedIn, isAuthor , isReviewAuthor} = require('../middleware');
 
 
 // review model
@@ -15,6 +15,7 @@ router.post('/', validateReview , isLoggedIn ,catchAsync(async(req,res)=>{
     // res.send("success!")
     const campground = await Campground.findById(req.params.id)
     const review = new Review(req.body.review);
+    review.author = req.user._id;
     campground.reviews.push(review);
     await review.save();
     await campground.save();
@@ -23,7 +24,7 @@ router.post('/', validateReview , isLoggedIn ,catchAsync(async(req,res)=>{
 }))
 
 //delete review
-router.delete('/:reviewId', isLoggedIn , isAuthor , catchAsync(async(req,res)=>{
+router.delete('/:reviewId', isLoggedIn , isReviewAuthor , catchAsync(async(req,res)=>{
     const{id, reviewId} = req.params;
     await Campground.findByIdAndUpdate(id,{$pull:{reviews:reviewId}});
     await Review.findByIdAndDelete(reviewId);

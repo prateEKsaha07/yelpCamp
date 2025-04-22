@@ -17,6 +17,8 @@
               <li class="list-group-item"><strong>rs.<%= camp.price %>/night</strong></li>
               <li class="list-group-item"><strong>submitted BY:</strong> <%= camp.author.username %></li>
             </ul>
+
+
             <!-- needed to be fixed -->
             <% if (currentUser && String(camp.author._id) === String(currentUser._id)) { %>
             <!-- fixed -->
@@ -36,7 +38,7 @@
     <!-- review side -->
     <div class="col-6">
 
-        
+
         <% if(currentUser) { %>
         <form  class="mb-3 validated-form " action="/campground/<%=camp._id %>/reviews" method="POST" novalidate>
             <h2>Leave A Review:</h2>
@@ -59,10 +61,21 @@
             <div class="card mb-3 ">
         <div class="card-body">
             <h5 class="card-title">rating : <%= review.rating %>/5</h5>
+            <% if (review.author) { %>
+                <p class="card-subtitle mb-2">Reviewed by: <%= review.author.username %> </p>
+              <% } else { %>
+                <p class="card-subtitle mb-2 text-danger">Unknown reviewer</p>
+              <% } %>
             <p class="card-text"><%= review.body %></p>
+            
+
+            <% if (currentUser && String(review.author._id) === String(currentUser._id)) { %>
             <form action="/campground/<%= camp._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
                 <button class="btn-sm btn btn-danger" type="submit">delete</button>
             </form>
+            <% } %>
+
+
         </div>
     </div>
         <% } %>

@@ -6,6 +6,7 @@ const Campground = require('../models/campground');
 const mongoose = require('mongoose');
 const { campgroundSchema } = require('../Schemas');
 const {isLoggedIn,isAuthor,validateCampground} = require('../middleware');
+const review = require('../models/review');
 
 
 //index route
@@ -40,15 +41,21 @@ router.get('/:id', catchAsync(async(req,res)=>{
     }
 
 
-    const camp = await Campground.findById(id).populate('reviews').populate('author');
+    const camp = await Campground.findById(id).populate({
+        path:'reviews',
+        populate:{
+            path:'author'
+        }
+    }).populate('author');
     console.log(camp);
     if (!camp) {
         req.flash('error', 'Cannot find that campground!');
         return res.redirect('/campground'); // make sure this matches your index route
     }
     camp.author = camp.author.toString();  // or ._id.toString() if it's populated
-    
+
     //debugging
+    console.log(review.author)
     console.log('Camp Author:', camp.author);
     console.log('Current User:', req.user ? req.user._id : 'No user');
 
