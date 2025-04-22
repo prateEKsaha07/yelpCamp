@@ -16,18 +16,21 @@
             <a class="nav-link" href="/campground/new">add Campground</a>
           </li>
 
-          <% if(!currentUser){%>
-          <li class="nav-item">
-            <a class="nav-link" href="/login">Login</a>
+          <% if (!currentUser) { %>
+            <li class="nav-item">
+                <a class="nav-link" href="/login">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/register">Register</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Logout -> Broken</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/register">register</a>
-          </li>
-          <% } else {%>
-          <li class="nav-item">
-            <a class="nav-link" href="/logout">logout</a>
-          </li> 
-          <% } %>
+        <% } else { %>
+            <!-- <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+            </li> -->
+        <% } %>
         </ul>
       </div>  
     </div>

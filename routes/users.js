@@ -10,14 +10,17 @@ router.get('/register',(req,res)=>{
     res.render('users/register');
 })
 
-router.post('/register', catchAsync(async (req,res) =>{
+router.post('/register', catchAsync(async (req,res,next) =>{
     try{
         const {email,username,password} = req.body;
         const user = new User({email,username});
         const registered = await User.register(user,password);
-        console.log(registered);
-        req.flash('welcome to yelpcamp');
-        res.redirect('/campground');
+        req.login(registered,(err)=>{
+            if(err) return next(err);
+            console.log(registered);
+            req.flash('welcome to yelpcamp');
+            res.redirect('/campground');
+        })
     }catch(e){
         req.flash('error',e.message);
         res.redirect('register');
@@ -29,10 +32,19 @@ router.get('/login',(req,res)=>{
     res.render('users/login');
 })
 
-router.post('/login',passport.authenticate('local',{failureFlash:true,failureRedirect:'/login'}),(req,res)=>{
+router.post('/login',
+    passport.authenticate('local',{
+        failureFlash:true,
+        failureRedirect:'/login'
+    }
+),(req,res)=>{
+    const redirectUrl = req.session.returnTo || '/campground';
+    delete req.session.returnTo;
+    console.log(redirectUrl)
     req.flash('success','welcome back!');
-    res.redirect('/campground');
+    res.redirect(redirectUrl);
 })
+//returnTo is not working
 
 //logout
 router.get('/logout', (req, res, next) => {

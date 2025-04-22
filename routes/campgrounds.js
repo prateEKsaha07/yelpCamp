@@ -35,6 +35,7 @@ router.get('/new',isLoggedIn,(req,res)=>{
 //getting the data from new camp form 
 router.post('/', validateCampground ,catchAsync(async(req,res,next)=>{
     const campground = new Campground(req.body.campground);
+    campground.author = req.user._id;
     await campground.save();
     req.flash('success','new campground created successfully!')
     res.redirect(`/campground/${campground._id}`);
@@ -51,7 +52,8 @@ router.get('/:id', catchAsync(async(req,res)=>{
     }
 
 
-    const camp = await Campground.findById(id).populate('reviews')
+    const camp = await Campground.findById(id).populate('reviews').populate('author');
+    console.log(camp);
     if (!camp) {
         req.flash('error', 'Cannot find that campground!');
         return res.redirect('/campground'); // make sure this matches your index route
