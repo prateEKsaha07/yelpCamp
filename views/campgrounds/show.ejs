@@ -42,13 +42,28 @@
 
         <% if(currentUser) { %>
         <form  class="mb-3 validated-form " action="/campground/<%=camp._id %>/reviews" method="POST" novalidate>
-            <h2>Leave A Review:</h2>
+        <div class="mb-b">
+        <fieldset class="starability-basic">
+            <legend>leave a review:</legend>
+            <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
+            <input type="radio" id="second-rate1" name="review[rating]" value="1" />
+            <label for="second-rate1" title="Terrible">1 star</label>
+            <input type="radio" id="second-rate2" name="review[rating]" value="2" />
+            <label for="second-rate2" title="Not good">2 stars</label>
+            <input type="radio" id="second-rate3" name="review[rating]" value="3" />
+            <label for="second-rate3" title="Average">3 stars</label>
+            <input type="radio" id="second-rate4" name="review[rating]" value="4" />
+            <label for="second-rate4" title="Very good">4 stars</label>
+            <input type="radio" id="second-rate5" name="review[rating]" value="5" />
+            <label for="second-rate5" title="Amazing">5 stars</label>
+        </fieldset>
+        </div>
             <div class="mb-3">
-                <div class="mb-3">
+                <!-- <div class="mb-3">
                     <label class="form-label" for="rating">rating</label>
                     <input class="form-control" type="range" min="1" max="5" name="review[rating]" id="rating">
-                </div>
-                <label class="form-label" for="body">reviews
+                </div> -->
+                <label class="form-label" for="body">lets talk about it:
                 </label>
                 <textarea class="form-control" name="review[body]" id="body" rows="10" cols="43" required></textarea>
                 <div class="valid-feedback">thanks for the review ! </div>
@@ -60,6 +75,7 @@
 
         <% for (let review of camp.reviews) { %>
             <div class="card mb-3 ">
+
         <div class="card-body">
             <h5 class="card-title">rating : <%= review.rating %>/5</h5>
             <p class="starability-result" data-rating="<%= review.rating %>"></p>
