@@ -72,6 +72,8 @@ passport.deserializeUser(User.deserializeUser());
 //     res.send(result);
 // })
 
+
+
 app.use((req,res,next)=>{
     // console.log(req.session)
     res.locals.currentUser = req.user; // this is the logged-in user
@@ -79,6 +81,7 @@ app.use((req,res,next)=>{
     res.locals.error=req.flash('error');
     next();
 })
+
 
 
 

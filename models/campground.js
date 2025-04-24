@@ -2,10 +2,16 @@ const mongoose = require('mongoose');
 const Schema  = mongoose.Schema;
 const review = require('./review');
 const User = require('./user');
+const { string } = require('joi');
 
 const campgroundSchema = new Schema({
     title: String,      
-    image: String,      
+    image: [
+        {   
+            url: String,
+            filename: String
+        }
+    ],      
     price: Number,      
     description: String,
     location: String,
