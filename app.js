@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
+
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
@@ -15,8 +19,6 @@ const { Session } = require('inspector/promises');
 const campgroundRoutes = require('./routes/campgrounds')
 const reviewRoutes = require('./routes/reviews');
 const userRoutes = require('./routes/users');
-
-
 
 
 
@@ -77,6 +79,8 @@ app.use((req,res,next)=>{
     res.locals.error=req.flash('error');
     next();
 })
+
+
 
 
 // home route
