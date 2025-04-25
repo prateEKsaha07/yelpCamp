@@ -46,7 +46,7 @@ module.exports.showCamps = async(req,res)=>{
             path:'author'
         }
     }).populate('author');
-    console.log(camp);
+    // console.log(camp);
     if (!camp) {
         req.flash('error', 'Cannot find that campground!');
         return res.redirect('/campground'); // make sure this matches your index route
@@ -54,9 +54,9 @@ module.exports.showCamps = async(req,res)=>{
     camp.author = camp.author.toString();  // or ._id.toString() if it's populated
 
     //debugging
-    console.log(review.author)
-    console.log('Camp Author:', camp.author);
-    console.log('Current User:', req.user ? req.user._id : 'No user');
+    // console.log(review.author)
+    // console.log('Camp Author:', camp.author);
+    // console.log('Current User:', req.user ? req.user._id : 'No user');
 
     res.render('campgrounds/show',{camp, currentUser: req.user});
     // populating with reviews
@@ -77,6 +77,7 @@ module.exports.editCamp = async(req,res)=>{
 
 module.exports.saveEditCamp = async(req,res) =>{
     const id = req.params.id;
+    console.log(req.body);
     const camp = await Campground.findByIdAndUpdate(id,{...req.body.campground})
     const imgs = req.files.map(f => ({
         url: f.path,
