@@ -25,7 +25,7 @@ router.get('/new',isLoggedIn,campgrounds.renderNewForm);
 
 router.route('/:id')
 .get(catchAsync(campgrounds.showCamps))
-.put(isLoggedIn,isAuthor,catchAsync(campgrounds.saveEditCamp))
+.put(isLoggedIn,isAuthor,upload.array('image'),catchAsync(campgrounds.saveEditCamp))
 .delete(isLoggedIn, isAuthor , catchAsync(campgrounds.deleteCamp))
 
 //edit route
