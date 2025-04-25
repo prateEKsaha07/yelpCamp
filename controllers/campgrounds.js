@@ -2,6 +2,7 @@ const ExpressError = require('../utils/ExpressError');
 const Campground = require('../models/campground');
 const mongoose = require('mongoose');
 const review = require('../models/review');
+const{ cloudinary } = require('../cloudinary');
 
 
 module.exports.index = async(req,res)=>{
@@ -82,9 +83,17 @@ module.exports.saveEditCamp = async(req,res) =>{
     const imgs = req.files.map(f => ({
         url: f.path,
         filename: f.filename
-      }));
+      }
+    ));
     camp.image.push(...imgs);
     await camp.save();
+    if (req.body.deleteImages){
+        for (let filename of req.body.deleteImages) {
+            await cloudinary.uploader.destroy(filename);
+        }
+    await camp.updateOne({$pull:{image:{filename:{$in:req.body.deleteImages}}}})
+    }
+    console.log(camp.image);
     console.log('campground updated:', id)
     req.flash('success','campground updated successfully!')
     res.redirect(`/campground/${camp._id}`)
