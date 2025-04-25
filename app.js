@@ -82,10 +82,6 @@ app.use((req,res,next)=>{
     next();
 })
 
-
-
-
-
 // home route
 app.get('/',(req,res)=>{
     res.render('home')
