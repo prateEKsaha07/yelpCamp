@@ -76,6 +76,7 @@ module.exports.editCamp = async(req,res)=>{
     //got the data not to update it to the db we need a package name method-override
 }
 
+//need to implement the image thumbnail virtual property in the model to show the image in the edit page
 module.exports.saveEditCamp = async(req,res) =>{
     const id = req.params.id;
     console.log(req.body);
@@ -91,9 +92,16 @@ module.exports.saveEditCamp = async(req,res) =>{
         for (let filename of req.body.deleteImages) {
             await cloudinary.uploader.destroy(filename);
         }
-    await camp.updateOne({$pull:{image:{filename:{$in:req.body.deleteImages}}}})
-    }
-    console.log(camp.image);
+    await camp.updateOne({
+        $pull:{
+            image:{
+                filename:{
+                    $in:req.body.deleteImages
+                }
+            }
+        }
+    })}
+    // console.log(camp.image);
     console.log('campground updated:', id)
     req.flash('success','campground updated successfully!')
     res.redirect(`/campground/${camp._id}`)
