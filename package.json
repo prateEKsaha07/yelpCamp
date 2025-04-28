@@ -9,6 +9,7 @@
   "author": "prateek",
   "license": "ISC",
   "dependencies": {
+    "@maptiler/client": "^1.8.1",
     "cloudinary": "^1.41.3",
     "connect-flash": "^0.1.1",
     "dotenv": "^16.5.0",

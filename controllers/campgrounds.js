@@ -4,6 +4,13 @@ const mongoose = require('mongoose');
 const review = require('../models/review');
 const{ cloudinary } = require('../cloudinary');
 
+// const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+// const mapBoxToken = process.env.MAPBOX_TOKEN;
+// const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
+
+const maptilerClient = require("@maptiler/client");
+maptilerClient.config.apiKey = process.env.MAPTILER_API_KEY;
+
 
 module.exports.index = async(req,res)=>{
     const campgrounds = await Campground.find({});
@@ -15,11 +22,30 @@ module.exports.renderNewForm = (req,res)=>{
     res.render('campgrounds/new')
 }
 
-module.exports.createNewCamp = async(req,res,next)=>{
-    console.log(req.files);
-    console.log(req.body);
+module.exports.createNewCamp = async(req,res,next)=>{ 
+
+    const geoData = await maptilerClient.geocoding.forward(req.body.campground.location, { limit: 1 });
+    console.log('geodata:',geoData);
+
+    if (!geoData || geoData.features.length === 0) {
+        req.flash('error', 'Could not find coordinates for the specified location.');
+        return res.redirect('/campground/new');
+    }
+
+    // Extract coordinates and store them in the campground object
+    const coordinates = geoData.features[0].geometry.coordinates;
+    console.log('Coordinates:', coordinates);  // Logging coordinates for verification
+
 
     const campground = new Campground(req.body.campground);
+
+    // campground.geometry = geoData.features[0].geometry;
+     campground.geometry = {
+        type: 'Point',
+         coordinates: coordinates // Assign the coordinates from geoData
+     };
+    
+
     campground.image = req.files.map(f => ({
         url: f.path,
         filename: f.filename
@@ -54,12 +80,10 @@ module.exports.showCamps = async(req,res)=>{
     }
     camp.author = camp.author.toString();  // or ._id.toString() if it's populated
 
-    //debugging
-    // console.log(review.author)
-    // console.log('Camp Author:', camp.author);
-    // console.log('Current User:', req.user ? req.user._id : 'No user');
+    
+    // console.log('campground found data:',camp);
 
-    res.render('campgrounds/show',{camp, currentUser: req.user});
+    res.render('campgrounds/show',{campground:camp, currentUser: req.user});
     // populating with reviews
 }
 
@@ -80,7 +104,13 @@ module.exports.editCamp = async(req,res)=>{
 module.exports.saveEditCamp = async(req,res) =>{
     const id = req.params.id;
     console.log(req.body);
-    const camp = await Campground.findByIdAndUpdate(id,{...req.body.campground})
+    const camp = await Campground.findByIdAndUpdate(id,{...req.body.campground});
+
+    // // removable
+    // const geoData = await maptilerClient.geocoding.forward(req.body.camp.location, { limit: 1 });
+    // camp.geometry = geoData.features[0].geometry;
+    // // removable
+
     const imgs = req.files.map(f => ({
         url: f.path,
         filename: f.filename

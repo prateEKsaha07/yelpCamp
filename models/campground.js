@@ -4,14 +4,30 @@ const review = require('./review');
 const User = require('./user');
 const { string } = require('joi');
 
+
+const ImageSchema = new Schema({
+    url: String,
+    filename: String
+});
+
+ImageSchema.virtual('thumbnail').get(function () {
+    return this.url.replace('/upload', '/upload/w_200');
+});
+
 const campgroundSchema = new Schema({
     title: String,      
-    image: [
-        {   
-            url: String,
-            filename: String
+    image: [ImageSchema],
+    geometry: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            required: true
+        },
+        coordinates: {
+            type: [Number],
+            required: true
         }
-    ],      
+    },      
     price: Number,      
     description: String,
     location: String,
@@ -26,6 +42,11 @@ const campgroundSchema = new Schema({
             ref: "Review"
         }
     ]
+});
+
+// Ensure the virtual is included in the JSON response
+campgroundSchema.set('toJSON', {
+    virtuals: true
 });
 
 // deleting a campsite along with its all reviews
