@@ -8,7 +8,7 @@
 <!-- campground show side -->
     <div class="col-6 ">
         
-      <div id="map" style="width: 100%; height: 400px;"></div>
+      
         <div class="card" >
             <!-- fucked up the seeds needed to be seeded again -->
             <div id="campCarousel" class="carousel slide" data-bs-ride="carousel">
@@ -58,7 +58,8 @@
 
     <!-- review side -->
     <div class="col-6">
-
+      
+      <div id="map" style="width: 100%; height: 400px;"></div>
 
         <% if(currentUser) { %>
         <form  class="mb-3 validated-form " action="/campground/<%=campground._id %>/reviews" method="POST" novalidate>

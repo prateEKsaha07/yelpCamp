@@ -15,7 +15,7 @@ maptilerClient.config.apiKey = process.env.MAPTILER_API_KEY;
 module.exports.index = async(req,res)=>{
     const campgrounds = await Campground.find({});
     // console.log(campgrounds);
-    res.render('campgrounds/index',{campgrounds})
+    res.render('campgrounds/index',{campgrounds, maptilerKey: process.env.MAPTILER_API_KEY})
 }
 
 module.exports.renderNewForm = (req,res)=>{
