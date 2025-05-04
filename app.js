@@ -16,15 +16,24 @@ const User = require('./models/user');
 const { Session } = require('inspector/promises');
 const mongoSanitize = require('express-mongo-sanitize');
 
+// production database connection
+// const dbUri = process.env.DB_URI;
+
+// development database connection
+const dbUri = 'mongodb://localhost:27017/yelp-camp';
 
 // routes
 const campgroundRoutes = require('./routes/campgrounds')
 const reviewRoutes = require('./routes/reviews');
 const userRoutes = require('./routes/users');
-
+// mongodb://localhost:27017/yelp-camp
 const app = express();
+
 //db connection
-mongoose.connect('mongodb://localhost:27017/yelp-camp',{
+mongoose.connect(dbUri,{
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    retryWrites: true, 
 });
 
 //middlewares

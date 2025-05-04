@@ -12,7 +12,7 @@ module.exports.handleSignup = async (req,res,next) =>{
         const registered = await User.register(user,password);
         req.login(registered,(err)=>{
             if(err) return next(err);
-            console.log(registered);
+            // console.log(registered);
             req.flash('welcome to yelpcamp');
             res.redirect('/campground');
         })
@@ -29,7 +29,7 @@ module.exports.showLoginForm = (req,res)=>{
 module.exports.handleLogin = (req,res)=>{
     const redirectUrl = req.session.returnTo || '/campground';
     delete req.session.returnTo;
-    console.log(redirectUrl)
+    // console.log(redirectUrl)
     req.flash('success','welcome back!');
     res.redirect(redirectUrl);
 }
