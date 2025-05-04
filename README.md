@@ -1,4 +1,3 @@
-Perfect! Here's a clean and professional **README.md** and a **deployment checklist** for your `YelpCamp` project.
 
 ---
 
@@ -82,5 +81,3 @@ npm run dev
 ✅ Use CDN for static resources (Bootstrap/MapTiler)
 
 ---
-
-Let me know if you'd like this README in a markdown file or customized more (like changing your GitHub repo link or adding screenshots).
