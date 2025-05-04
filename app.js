@@ -15,6 +15,7 @@ const LocalStrategy = require('passport-local');
 const User = require('./models/user');
 const { Session } = require('inspector/promises');
 const mongoSanitize = require('express-mongo-sanitize');
+const MongoStore = require('connect-mongo');
 
 // production database connection
 // const dbUri = process.env.DB_URI;
@@ -31,8 +32,8 @@ const app = express();
 
 //db connection
 mongoose.connect(dbUri,{
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    // useNewUrlParser: true,
+    // useUnifiedTopology: true,
     retryWrites: true, 
 });
 
@@ -45,9 +46,21 @@ app.engine('ejs',ejsMate)
 app.use(express.static(path.join(__dirname,'public')));
 
 
+const store = MongoStore.create({
+    mongoUrl: dbUri,
+    crypto: {
+        secret: 'thisisasecret'
+    },
+    touchAfter: 24 * 3600 // time in seconds
+});
 
+
+store.on('error',function(e){
+    console.log('session store error',e);
+})
 
 const sessionConfig ={
+    store:store,
     name:'session',
     // store: new MongoStore({mongoUrl: 'mongodb://localhost:27017/yelp-camp'}),
     secret:'hellohowareyou!',
