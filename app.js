@@ -18,10 +18,10 @@ const mongoSanitize = require('express-mongo-sanitize');
 const MongoStore = require('connect-mongo');
 
 // production database connection
-// const dbUri = process.env.DB_URI;
+const dbUri = process.env.DB_URI || 'mongodb://localhost:27017/yelp-camp'; // this is the production database connection
 
 // development database connection
-const dbUri = 'mongodb://localhost:27017/yelp-camp';
+// const dbUri = 'mongodb://localhost:27017/yelp-camp';
 
 // routes
 const campgroundRoutes = require('./routes/campgrounds')
@@ -32,8 +32,8 @@ const app = express();
 
 //db connection
 mongoose.connect(dbUri,{
-    // useNewUrlParser: true,
-    // useUnifiedTopology: true,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
     retryWrites: true, 
 });
 
