@@ -1,6 +1,7 @@
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
+// require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
@@ -38,6 +39,8 @@ app.use(express.static(path.join(__dirname,'public')));
 
 
 const sessionConfig ={
+    name:'session',
+    // store: new MongoStore({mongoUrl: 'mongodb://localhost:27017/yelp-camp'}),
     secret:'hellohowareyou!',
     resave:false,
     saveUninitialized:true,
